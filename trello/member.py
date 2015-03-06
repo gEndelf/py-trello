@@ -15,7 +15,7 @@ class Member(object):
         return '<Member %s>' % self.id
 
     def fetch(self):
-        """Fetch all attributes for this card"""
+        """Fetch all attributes for this member"""
         json_obj = self.client.fetch_json(
             '/members/' + self.id,
             query_params={'badges': False})
@@ -26,6 +26,7 @@ class Member(object):
         self.username = json_obj['username']
         self.full_name = json_obj['fullName']
         self.initials = json_obj['initials']
+        self.avatar_has = json_obj['avatarHash']
         return self
 
     def fetch_comments(self):
@@ -35,6 +36,19 @@ class Member(object):
                 '/members/' + self.id + '/actions',
                 query_params={'filter': 'commentCard'})
         return comments
+
+    @property
+    def avatar_url(self, size='large'):
+        """
+        Return url for member avatar
+        
+        :param size: can be 'small' (30x30) or 'large' (170x170)
+        """
+        size = 30 if size is 'small' else 170
+        url= "https://trello-avatars.s3.amazonaws.com/{avatar_id}/{size}".format(
+                avatar_id=self.id,
+                size=size)
+        return url
 
     @classmethod
     def from_json(cls, trello_client, json_obj):
