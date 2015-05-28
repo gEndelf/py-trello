@@ -122,13 +122,15 @@ class TrelloBoardTestCase(unittest.TestCase):
             cls._list = cls._board.add_list('List')
 
     def _add_card(self, name, description=None):
-        card = self._list.add_card(name, description)
-        self.assertIsNotNone(card, msg="card is None")
-        self.assertIsNotNone(card.id, msg="id not provided")
-        self.assertEquals(card.name, name)
-        self.assertEqual(card.board, self._board)
-        self.assertEqual(card.trello_list, self._list)
-        return card
+        try:
+            card = self._list.add_card(name, description)
+            self.assertIsNotNone(card, msg="card is None")
+            self.assertIsNotNone(card.id, msg="id not provided")
+            self.assertEquals(card.name, name)
+            return card
+        except Exception as e:
+            print(str(e))
+            self.fail("Caught Exception adding card")
 
     def test40_add_card(self):
         name = "Testing from Python - no desc"
@@ -311,9 +313,9 @@ class TrelloBoardTestCase(unittest.TestCase):
 
 
 def suite():
-    tests = ['test01_list_boards', 'test10_board_attrs', 'test20_add_card']
-    return unittest.TestSuite(map(TrelloClientTestCase, tests))
-
+    # tests = ['test01_list_boards', 'test10_board_attrs', 'test20_add_card']
+    # return unittest.TestSuite(map(TrelloBoardTestCase, tests))
+    return unittest.TestLoader().loadTestsFromTestCase(TrelloBoardTestCase)
 
 if __name__ == "__main__":
     unittest.main()
