@@ -7,3 +7,6 @@ dist
 *swp
 .project
 .pydevproject
+
+.idea
+*.iml
